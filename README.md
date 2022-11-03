@@ -7,3 +7,8 @@ Endpoints: post, download, list, info
 
 To make a post request: 
 curl -X POST -F file=@filename.wav http://localhost:8000/post
+
+To run server:
+export FLASK_ENV=development
+export FLASK_APP=insta485
+flask run --host 0.0.0.0 --port 8000
