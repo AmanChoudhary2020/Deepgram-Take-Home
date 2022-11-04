@@ -21,8 +21,7 @@ def get_db_connection():
 
 @app.route('/')
 def home():
-    context = {"text": "Hello!"}
-    return flask.render_template("index.html", **context)
+    return flask.render_template("index.html")
 
 
 @app.route('/post', methods=['POST'])
