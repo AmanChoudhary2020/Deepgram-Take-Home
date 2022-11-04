@@ -6,7 +6,7 @@ Project completed using Python, Flask, SQLite3, and the Python Wave Module (amon
 Endpoints: post, download, list, info
 
 To make a post request: 
-curl -X POST -F file=@filename.wav http://localhost:8000/post
+``` curl -X POST -F file=@filename.wav http://localhost:8000/post ```
 
 To run server:
 ```
