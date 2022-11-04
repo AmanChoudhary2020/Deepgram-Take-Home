@@ -7,7 +7,7 @@ from io import BytesIO
 from zipfile import ZipFile
 
 app = flask.Flask(__name__)
-#count = 0
+# count = 0
 
 
 def get_db_connection():
@@ -53,13 +53,13 @@ def post():
     Read raw audio bytes and convert/save to a .wav file:
 
     global count
-    raw_data = flask.request.get_data()   
+    raw_data = flask.request.get_data()
     with wave.open(f"uploads/sound{count}.wav", "wb") as out_f:
             out_f.setnchannels(1)
             out_f.setsampwidth(2) # number of bytes
             out_f.setframerate(44100)
             out_f.writeframesraw(raw_data)
-            count += 1    
+            count += 1
     '''
     # return '', 201
     return flask.redirect("/list")
@@ -82,23 +82,28 @@ def download():
         if duration_filter != -1:
             posts = conn.execute(
                 f"SELECT * FROM audio WHERE filename='{name_filter}' AND duration<={duration_filter}").fetchall()
-            for row in posts:
-                filenames.append(row[3])
         else:
             posts = conn.execute(
                 f"SELECT * FROM audio WHERE filename='{name_filter}'").fetchall()
-            for row in posts:
-                filenames.append(row[3])
     else:
         if duration_filter != -1:
             posts = conn.execute(
                 f"SELECT * FROM audio WHERE duration<={duration_filter}").fetchall()
-            for row in posts:
-                filenames.append(row[3])
         else:
             posts = conn.execute(f"SELECT * FROM audio").fetchall()
-            for row in posts:
-                filenames.append(row[3])
+
+    '''
+    If instead of downloading a zip file, this endpoint should return json:
+
+    context = {}
+    for row in posts:
+        context[row[0]] = row[1:]
+
+    return flask.jsonify(context), 200
+
+    '''
+    for row in posts:
+        filenames.append(row[3])
 
     conn.close()
 
@@ -129,23 +134,18 @@ def list():
         if duration_filter != -1:
             posts = conn.execute(
                 f"SELECT * FROM audio WHERE filename='{name_filter}' AND duration<={duration_filter}").fetchall()
-            for row in posts:
-                context[row[0]] = row[3]
         else:
             posts = conn.execute(
                 f"SELECT * FROM audio WHERE filename='{name_filter}'").fetchall()
-            for row in posts:
-                context[row[0]] = row[3]
     else:
         if duration_filter != -1:
             posts = conn.execute(
                 f"SELECT * FROM audio WHERE duration<={duration_filter}").fetchall()
-            for row in posts:
-                context[row[0]] = row[3]
         else:
             posts = conn.execute(f"SELECT * FROM audio").fetchall()
-            for row in posts:
-                context[row[0]] = row[3]
+
+    for row in posts:
+        context[row[0]] = row[3]
     conn.close()
 
     return flask.jsonify(context), 200
@@ -168,23 +168,19 @@ def info():
         if duration_filter != -1:
             posts = conn.execute(
                 f"SELECT * FROM audio WHERE filename='{name_filter}' AND duration<={duration_filter}").fetchall()
-            for row in posts:
-                context[row[0]] = row[3]
         else:
             posts = conn.execute(
                 f"SELECT * FROM audio WHERE filename='{name_filter}'").fetchall()
-            for row in posts:
-                context[row[0]] = row[3]
     else:
         if duration_filter != -1:
             posts = conn.execute(
                 f"SELECT * FROM audio WHERE duration<={duration_filter}").fetchall()
-            for row in posts:
-                context[row[0]] = row[3]
         else:
             posts = conn.execute(f"SELECT * FROM audio").fetchall()
-            for row in posts:
-                context[row[0]] = row[3]
+
+    for row in posts:
+        context[row[0]] = row[3]
+
     conn.close()
 
     return flask.jsonify(context), 200
