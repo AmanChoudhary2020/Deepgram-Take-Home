@@ -77,29 +77,31 @@ def download():
 
     # connect to database
     conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM audio').fetchall()
 
     filenames = []
 
     # query appropriate rows
-    for row in posts:
-        postid = row[0]
-        created = row[1]
-        duration = row[2]
-        filename = row[3]
-
-        if name_filter != "":
-            if duration_filter != -1:
-                if filename == name_filter and duration <= duration_filter:
-                    filenames.append(filename)
-            elif filename == name_filter:
-                filenames.append(filename)
+    if name_filter != "":
+        if duration_filter != -1:
+            posts = conn.execute(
+                f"SELECT * FROM audio WHERE filename='{name_filter}' AND duration<={duration_filter}").fetchall()
+            for row in posts:
+                filenames.append(row[3])
         else:
-            if duration_filter != -1:
-                if duration <= duration_filter:
-                    filenames.append(filename)
-            else:
-                filenames.append(filename)
+            posts = conn.execute(
+                f"SELECT * FROM audio WHERE filename='{name_filter}'").fetchall()
+            for row in posts:
+                filenames.append(row[3])
+    else:
+        if duration_filter != -1:
+            posts = conn.execute(
+                f"SELECT * FROM audio WHERE duration<={duration_filter}").fetchall()
+            for row in posts:
+                filenames.append(row[3])
+        else:
+            posts = conn.execute(f"SELECT * FROM audio").fetchall()
+            for row in posts:
+                filenames.append(row[3])
 
     conn.close()
 
@@ -122,30 +124,31 @@ def list():
 
     # connect to database
     conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM audio').fetchall()
 
     context = {}
 
     # query appropriate rows
-    for row in posts:
-        postid = row[0]
-        created = row[1]
-        duration = row[2]
-        filename = row[3]
-
-        if name_filter != "":
-            if duration_filter != -1:
-                if filename == name_filter and duration <= duration_filter:
-                    context[postid] = filename
-            elif filename == name_filter:
-                context[postid] = filename
+    if name_filter != "":
+        if duration_filter != -1:
+            posts = conn.execute(
+                f"SELECT * FROM audio WHERE filename='{name_filter}' AND duration<={duration_filter}").fetchall()
+            for row in posts:
+                context[row[0]] = row[3]
         else:
-            if duration_filter != -1:
-                if duration <= duration_filter:
-                    context[postid] = filename
-            else:
-                context[postid] = filename
-
+            posts = conn.execute(
+                f"SELECT * FROM audio WHERE filename='{name_filter}'").fetchall()
+            for row in posts:
+                context[row[0]] = row[3]
+    else:
+        if duration_filter != -1:
+            posts = conn.execute(
+                f"SELECT * FROM audio WHERE duration<={duration_filter}").fetchall()
+            for row in posts:
+                context[row[0]] = row[3]
+        else:
+            posts = conn.execute(f"SELECT * FROM audio").fetchall()
+            for row in posts:
+                context[row[0]] = row[3]
     conn.close()
 
     return flask.jsonify(context), 200
@@ -160,33 +163,31 @@ def info():
 
     # connect to database
     conn = get_db_connection()
-    posts = conn.execute('SELECT * FROM audio').fetchall()
 
     context = {}
 
     # query appropriate rows
-    for row in posts:
-        postid = row[0]
-        created = row[1]
-        duration = math.floor(int(row[2]))
-        filename = row[3]
-
-        time = str(datetime.timedelta(seconds=duration))
-        context2 = {"timestamp": created, "duration": time}
-
-        if name_filter != "":
-            if duration_filter != -1:
-                if filename == name_filter and duration <= duration_filter:
-                    context[filename] = context2
-            elif filename == name_filter:
-                context[filename] = context2
+    if name_filter != "":
+        if duration_filter != -1:
+            posts = conn.execute(
+                f"SELECT * FROM audio WHERE filename='{name_filter}' AND duration<={duration_filter}").fetchall()
+            for row in posts:
+                context[row[0]] = row[3]
         else:
-            if duration_filter != -1:
-                if duration <= duration_filter:
-                    context[filename] = context2
-            else:
-                context[filename] = context2
-
+            posts = conn.execute(
+                f"SELECT * FROM audio WHERE filename='{name_filter}'").fetchall()
+            for row in posts:
+                context[row[0]] = row[3]
+    else:
+        if duration_filter != -1:
+            posts = conn.execute(
+                f"SELECT * FROM audio WHERE duration<={duration_filter}").fetchall()
+            for row in posts:
+                context[row[0]] = row[3]
+        else:
+            posts = conn.execute(f"SELECT * FROM audio").fetchall()
+            for row in posts:
+                context[row[0]] = row[3]
     conn.close()
 
     return flask.jsonify(context), 200
