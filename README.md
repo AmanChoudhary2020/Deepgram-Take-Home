@@ -1,5 +1,5 @@
-# Deepgram-Coding-Project
-Deepgram Summer 2023 Internship Coding Project
+# Deepgram Take Home Coding Assignment
+A simple API server to handle user audio projects.
 
 Project completed using Python, Flask, SQLite3, and the Python Wave Module (among others).
 
